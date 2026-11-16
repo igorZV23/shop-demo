@@ -830,3 +830,19 @@ html,body{background:#f3f5fc!important;background-image:radial-gradient(900px 42
   transform:none !important;
 }
 /* ----- конец FIX V5 ----- */
+
+/* --- FIX V5b: плашки преимуществ — тёмное стекло, акцентные иконки --- */
+.hero .chips .chip,
+.wrap .hero .chips .chip{
+  background:rgba(15,23,42,.62) !important;
+  border:1px solid rgba(148,163,184,.38) !important;
+  color:#eaf0fb !important;
+  backdrop-filter:blur(10px) !important;
+  -webkit-backdrop-filter:blur(10px) !important;
+  box-shadow:0 14px 28px -22px rgba(2,6,23,.95) !important;
+}
+.hero .chips .chip svg{ color:#a5b4fc !important; }
+.hero .chips .chip:nth-child(1) svg{ color:#38bdf8 !important; }
+.hero .chips .chip:nth-child(2) svg{ color:#a78bfa !important; }
+.hero .chips .chip:nth-child(3) svg{ color:#34d399 !important; }
+/* ----- конец FIX V5b ----- */

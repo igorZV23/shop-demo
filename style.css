@@ -676,3 +676,157 @@ html,body{background:#f3f5fc!important;background-image:radial-gradient(900px 42
   .price{font-size:20px!important}
   .hero .chip{font-size:12px!important;padding:8px 12px!important}
 }
+
+/* ===================== FIX V5: фото товаров, тёмный hero, сочные акценты ===================== */
+:root{
+  --indigo:#4f46e5;
+  --indigo-dark:#4338ca;
+  --violet:#7c3aed;
+}
+
+/* --- 4. Хедер и контент по одной ширине 1280 --- */
+.top-in,
+.wrap{
+  max-width:1280px !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+.top-in{
+  padding-left:24px !important;
+  padding-right:24px !important;
+  gap:18px !important;
+}
+
+/* --- 1. Фото товаров вместо рисованных иконок --- */
+.card-img{
+  position:relative !important;
+  aspect-ratio:1 / 1 !important;
+  height:auto !important;
+  min-height:0 !important;
+  max-height:none !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:hidden !important;
+  display:block !important;
+  background:#f1f4fa !important;
+  border-bottom:1px solid rgba(15,23,42,.06) !important;
+}
+.card-img .ph{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:1 !important;
+  display:grid !important;
+  place-items:center !important;
+  font-size:60px !important;
+  line-height:1 !important;
+  opacity:.95 !important;
+  background:linear-gradient(160deg,#eef4ff 0%,#f6f1ff 55%,#fdf3e8 100%) !important;
+}
+.card-img .pimg{
+  position:absolute !important;
+  inset:0 !important;
+  z-index:2 !important;
+  width:100% !important;
+  height:100% !important;
+  max-width:none !important;
+  max-height:none !important;
+  object-fit:cover !important;
+  object-position:center !important;
+  display:block !important;
+  background:#f1f4fa !important;
+  transition:transform .55s cubic-bezier(.2,.7,.2,1) !important;
+}
+.card:hover .card-img .pimg{
+  transform:scale(1.06) !important;
+}
+.card-img .disc{
+  position:absolute !important;
+  top:12px !important;
+  left:12px !important;
+  z-index:3 !important;
+  background:linear-gradient(135deg,#ef4444 0%,#f97316 100%) !important;
+  color:#fff !important;
+  font-weight:900 !important;
+  font-size:12.5px !important;
+  letter-spacing:.02em !important;
+  padding:5px 10px !important;
+  border-radius:10px !important;
+  box-shadow:0 10px 20px -12px rgba(239,68,68,.95) !important;
+  white-space:nowrap !important;
+}
+.card-img .disc.hit{
+  background:linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%) !important;
+  box-shadow:0 10px 20px -12px rgba(79,70,229,.95) !important;
+}
+
+/* --- 2. Hero: глубокий тёмный фон с фиолетово-синим свечением --- */
+.wrap .hero,
+.hero{
+  background-color:#0b1220 !important;
+  background-image:
+    radial-gradient(620px 620px at 92% -14%, rgba(124,58,237,.55) 0%, rgba(124,58,237,0) 68%),
+    radial-gradient(760px 520px at 4% 112%, rgba(37,99,235,.45) 0%, rgba(37,99,235,0) 70%),
+    linear-gradient(135deg,#131f42 0%,#0f172a 52%,#0a1120 100%) !important;
+  color:#ffffff !important;
+  border:1px solid rgba(148,163,184,.18) !important;
+  border-radius:22px !important;
+  box-shadow:0 34px 70px -42px rgba(8,15,35,.85) !important;
+  overflow:hidden !important;
+}
+.hero::before,
+.hero::after{
+  content:none !important;
+  display:none !important;
+}
+.wrap .hero h1,
+.hero h1{
+  color:#ffffff !important;
+  text-shadow:0 2px 26px rgba(2,6,23,.5) !important;
+  letter-spacing:-.02em !important;
+}
+.wrap .hero p,
+.hero p{
+  color:#c9d4e8 !important;
+}
+.hero .chips{ margin-top:20px !important; }
+.hero .chip{
+  background:rgba(15,23,42,.55) !important;
+  border:1px solid rgba(148,163,184,.34) !important;
+  color:#eaf0fb !important;
+  border-radius:14px !important;
+  padding:9px 15px !important;
+  font-weight:600 !important;
+  backdrop-filter:blur(10px) !important;
+  -webkit-backdrop-filter:blur(10px) !important;
+  box-shadow:0 12px 26px -20px rgba(2,6,23,.9) !important;
+}
+.hero .chip svg{ color:#a5b4fc !important; }
+.hero .chips .chip:nth-child(1) svg{ color:#38bdf8 !important; }
+.hero .chips .chip:nth-child(2) svg{ color:#a78bfa !important; }
+.hero .chips .chip:nth-child(3) svg{ color:#34d399 !important; }
+
+/* --- 3. Логотип и кнопки --- */
+.logo-mark{
+  background:linear-gradient(140deg,#4f46e5 0%,#7c3aed 58%,#2563eb 100%) !important;
+  color:#fff !important;
+  box-shadow:0 10px 22px -14px rgba(79,70,229,.9) !important;
+}
+.top .logo span{ color:var(--ink) !important; }
+.btn-primary{
+  background:var(--indigo) !important;
+  background-image:none !important;
+  color:#ffffff !important;
+  border:0 !important;
+  font-weight:800 !important;
+  border-radius:12px !important;
+  box-shadow:0 1px 0 rgba(255,255,255,.14) inset, 0 12px 22px -18px rgba(79,70,229,.75) !important;
+  filter:none !important;
+  transition:background-color .18s ease, transform .18s ease !important;
+}
+.btn-primary:hover{
+  background:var(--indigo-dark) !important;
+  background-image:none !important;
+  box-shadow:0 1px 0 rgba(255,255,255,.16) inset, 0 14px 24px -20px rgba(67,56,202,.7) !important;
+  transform:none !important;
+}
+/* ----- конец FIX V5 ----- */

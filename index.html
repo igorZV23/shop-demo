@@ -6,7 +6,7 @@
 <title>Vovochka.Store — демо интернет-магазин</title>
 <meta name="description" content="Демо интернет-магазин: каталог, корзина, админка.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="style.css?v=6">
+<link rel="stylesheet" href="style.css?v=7">
 </head>
 <body>
 <header class="top">
@@ -64,14 +64,14 @@ var DB = {
   KC: 'shop_cart_v1',
   KD: 'shop_promo_v1',
   DEFAULT: [
-    {id:'p1',name:'Смартфон Neo X6 128 ГБ',desc:'Экран 6.5 дюйма, камера 50 Мп, батарея 5000 мАч, тёмно-синий.',price:24990,old:29990,cat:'Электроника',icon:'📱'},
-    {id:'p2',name:'Наушники AirBeat Pro',desc:'Беспроводные, активное шумоподавление, до 30 часов работы.',price:7490,old:9490,cat:'Электроника',icon:'🎧'},
-    {id:'p3',name:'Ноутбук SlimBook 14',desc:'Ryzen 5, 16 ГБ ОЗУ, SSD 512 ГБ, корпус 1.3 кг.',price:58900,old:0,cat:'Электроника',icon:'💻'},
-    {id:'p4',name:'Кофеварка Barista Home',desc:'Капучинатор, 15 бар, капучино и латте за две минуты.',price:12990,old:15490,cat:'Дом',icon:'☕'},
-    {id:'p5',name:'Кроссовки Urban Run',desc:'Дышащий верх, амортизация, размеры 38-45.',price:5490,old:6990,cat:'Одежда',icon:'👟'},
-    {id:'p6',name:'Рюкзак City 22 литра',desc:'Водоотталкивающая ткань, отсек для ноутбука 15.6.',price:3490,old:0,cat:'Аксессуары',icon:'🎒'},
-    {id:'p7',name:'Умные часы Pulse S2',desc:'AMOLED, пульс и сон, автономность до 10 дней.',price:8990,old:10990,cat:'Электроника',icon:'⌚'},
-    {id:'p8',name:'Клавиатура KeyLite 75',desc:'Механика, горячая замена свитчей, подсветка.',price:6490,old:7990,cat:'Электроника',icon:'⌨'}
+    {id:'p1',name:'Смартфон Neo X6 128 ГБ',desc:'Экран 6.5 дюйма, камера 50 Мп, батарея 5000 мАч, тёмно-синий.',price:24990,old:29990,photo:'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=900&auto=format&fit=crop&q=80',cat:'Электроника',icon:'📱'},
+    {id:'p2',name:'Наушники AirBeat Pro',desc:'Беспроводные, активное шумоподавление, до 30 часов работы.',price:7490,old:9490,photo:'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=900&auto=format&fit=crop&q=80',cat:'Электроника',icon:'🎧'},
+    {id:'p3',name:'Ноутбук SlimBook 14',desc:'Ryzen 5, 16 ГБ ОЗУ, SSD 512 ГБ, корпус 1.3 кг.',price:58900,old:0,hit:true,photo:'https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=900&auto=format&fit=crop&q=80',cat:'Электроника',icon:'💻'},
+    {id:'p4',name:'Кофеварка Barista Home',desc:'Капучинатор, 15 бар, капучино и латте за две минуты.',price:12990,old:15490,photo:'https://images.unsplash.com/photo-1558416165-5fb04b79b0e7?w=900&auto=format&fit=crop&q=80',cat:'Дом',icon:'☕'},
+    {id:'p5',name:'Кроссовки Urban Run',desc:'Дышащий верх, амортизация, размеры 38-45.',price:5490,old:6990,photo:'https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=900&auto=format&fit=crop&q=80',cat:'Одежда',icon:'👟'},
+    {id:'p6',name:'Рюкзак City 22 литра',desc:'Водоотталкивающая ткань, отсек для ноутбука 15.6.',price:3490,old:0,hit:true,photo:'https://images.unsplash.com/photo-1765516833058-c322c800fee1?w=900&auto=format&fit=crop&q=80',cat:'Аксессуары',icon:'🎒'},
+    {id:'p7',name:'Умные часы Pulse S2',desc:'AMOLED, пульс и сон, автономность до 10 дней.',price:8990,old:10990,photo:'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=900&auto=format&fit=crop&q=80',cat:'Электроника',icon:'⌚'},
+    {id:'p8',name:'Клавиатура KeyLite 75',desc:'Механика, горячая замена свитчей, подсветка.',price:6490,old:7990,photo:'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=900&auto=format&fit=crop&q=80',cat:'Электроника',icon:'⌨'}
   ]
 };
 function lsRead(k, fb){
@@ -85,7 +85,7 @@ function lsRead(k, fb){
 function lsWrite(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 function getProducts(){
   var p = lsRead(DB.KP, null);
-  var stale = (!p || !p.length || typeof p.slice !== 'function' || p.length !== DB.DEFAULT.length);
+  var stale = (!p || !p.length || typeof p.slice !== 'function' || p.length !== DB.DEFAULT.length || !p[0] || !p[0].photo);
   if (stale) { p = DB.DEFAULT.slice(); lsWrite(DB.KP, p); }
   return p;
 }
@@ -135,8 +135,14 @@ function addToCart(id){
 }
 function cardHtml(p){
   var oldPart = (p.old && p.old > p.price) ? '<span class="old">' + money(p.old) + '</span>' : '';
+  var disc = (p.old && p.old > p.price) ? Math.round((1 - p.price / p.old) * 100) : 0;
+  var discPart = disc > 0 ? '<span class="disc">-' + disc + '%</span>' : (p.hit ? '<span class="disc hit">Хит</span>' : '');
+  var imgPart = p.photo ? '<img class="pimg" src="' + esc(p.photo) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" onerror="this.onerror=null;this.style.display=\'none\';">' : '';
   return '<article class="card">' +
-    '<div class="card-img">' + artSvg(p) + '</div>' +
+    '<div class="card-img">' +
+      '<div class="ph" aria-hidden="true">' + esc(p.icon || '🛍') + '</div>' +
+      imgPart + discPart +
+    '</div>' +
     '<div class="card-body">' +
       '<div class="card-tag" data-cat="' + esc(p.cat || '') + '">' + esc(p.cat || 'Товар') + '</div>' +
       '<h3>' + esc(p.name) + '</h3>' +

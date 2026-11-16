@@ -460,3 +460,219 @@ html,body{max-width:100%!important;overflow-x:hidden!important}
 }
 .cart-thumb .art{max-width:44px!important;max-height:44px!important}
 .cart-thumb .art svg{max-width:44px!important;max-height:44px!important}
+
+/* ===================================================================
+   FIX V4 (2026-11-17) — яркий современный магазин в духе Ozon / WB / DNS
+   1) яркая шапка-градиент  2) цветные плашки категорий
+   3) тёплые карточки с цветной тенью  4) оранжевые кнопки «В корзину»
+   5) яркие цены и метка «СКИДКА»  6) живые акценты в корзине и админке
+   =================================================================== */
+:root{
+  --v4-blue:#2563eb;
+  --v4-blue-dark:#1d4ed8;
+  --v4-navy:#0f1f4b;
+  --v4-orange:#f97316;
+  --v4-orange-2:#fb923c;
+  --v4-red:#e11d48;
+  --v4-green:#16a34a;
+  --v4-card:#fffdfa;
+  --v4-bg:#f3f5fc;
+  --v4-line:#ece7f1;
+}
+html,body{background:#f3f5fc!important;background-image:radial-gradient(900px 420px at 12% -10%,#e8efff 0%,rgba(232,239,255,0) 70%),radial-gradient(700px 380px at 92% 0%,#fff2e3 0%,rgba(255,242,227,0) 70%)!important;background-repeat:no-repeat!important;background-attachment:fixed!important}
+
+/* ---------- 5. Яркая шапка магазина ---------- */
+.top{
+  background:linear-gradient(100deg,#0d1b40 0%,#1e3a8a 48%,#2563eb 100%)!important;
+  border-bottom:0!important;
+  box-shadow:0 12px 30px -20px rgba(13,27,64,.95)!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+}
+.top-in{padding-top:12px!important;padding-bottom:12px!important}
+.logo,.logo span,.logo strong{color:#ffffff!important}
+.logo small{color:#bfd3ff!important;letter-spacing:.12em!important}
+.logo-mark{
+  width:36px!important;height:36px!important;border-radius:12px!important;
+  background:linear-gradient(140deg,#f97316,#fb923c)!important;
+  box-shadow:0 10px 20px -10px rgba(249,115,22,.95)!important;
+}
+.logo-mark svg{stroke:#fff!important}
+.nav a{color:#dbeafe!important;border-radius:11px!important;font-weight:600!important}
+.nav a:hover{background:rgba(255,255,255,.16)!important;color:#fff!important}
+.nav a.active{background:rgba(255,255,255,.24)!important;color:#fff!important;font-weight:700!important}
+.nav .cart-link{
+  background:linear-gradient(135deg,#f97316,#fb923c)!important;color:#fff!important;
+  box-shadow:0 12px 22px -14px rgba(249,115,22,1)!important;
+}
+.nav .cart-link:hover{background:linear-gradient(135deg,#ea580c,#f97316)!important;color:#fff!important}
+.badge{background:#ffffff!important;color:#1d4ed8!important;border:0!important;font-weight:800!important;box-shadow:none!important}
+
+/* ---------- верхний баннер ---------- */
+.hero{
+  background:radial-gradient(130% 130% at 6% 0%,#3b82f6 0%,#4f46e5 48%,#7c3aed 100%)!important;
+  border:0!important;border-radius:22px!important;
+  box-shadow:0 28px 54px -30px rgba(79,70,229,.9)!important;
+  color:#fff!important;
+}
+.hero:before,.hero:after{display:block!important;opacity:.5!important}
+.hero h1,.hero h1 *{color:#ffffff!important;text-shadow:0 2px 18px rgba(10,20,60,.28)!important}
+.hero p,.hero p *{color:#e6ebff!important;text-shadow:none!important}
+.hero .chip{
+  background:rgba(255,255,255,.18)!important;
+  border:1px solid rgba(255,255,255,.34)!important;
+  color:#ffffff!important;
+  border-radius:99px!important;
+  box-shadow:none!important;
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+}
+.hero .chip svg{stroke:#ffffff!important}
+.hero .chip:nth-child(1){background:rgba(255,255,255,.22)!important}
+.hero .chip:nth-child(2){background:rgba(255,214,165,.26)!important;border-color:rgba(255,214,165,.5)!important}
+.hero .chip:nth-child(3){background:rgba(178,255,214,.2)!important;border-color:rgba(178,255,214,.45)!important}
+
+/* ---------- поиск и фильтр ---------- */
+.search{
+  background:#fff!important;border:1px solid #dbe4f7!important;border-radius:13px!important;
+  box-shadow:0 8px 20px -16px rgba(37,99,235,.9)!important;
+}
+.search:focus-within{border-color:#2563eb!important;box-shadow:0 0 0 3px rgba(37,99,235,.16)!important}
+.search-ico{color:#2563eb!important}
+.search input::placeholder{color:#9aa6bd}
+.sel{
+  border:1px solid #dbe4f7!important;border-radius:13px!important;
+  font-weight:700!important;color:#1e3a8a!important;background:#fff!important;
+}
+.sel:focus{border-color:#2563eb!important;box-shadow:0 0 0 3px rgba(37,99,235,.16)!important}
+.sel option{font-weight:600}
+.sel option[value="Электроника"]{color:#1d4ed8}
+.sel option[value="Дом"]{color:#15803d}
+.sel option[value="Одежда"]{color:#b45309}
+.sel option[value="Аксессуары"]{color:#7c3aed}
+.toolbar h2{color:#0f1f4b!important}
+.cnt{color:#7c8aa8!important;font-weight:700!important}
+
+/* ---------- 2. Тёплые карточки с цветной тенью ---------- */
+.card{
+  background:var(--v4-card)!important;
+  border:1px solid #f0eade!important;
+  border-radius:16px!important;
+  box-shadow:0 6px 16px -12px rgba(15,31,75,.35)!important;
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease!important;
+}
+.card:hover{
+  transform:translateY(-6px)!important;
+  border-color:#bfd7ff!important;
+  box-shadow:0 24px 46px -20px rgba(37,99,235,.48),0 10px 24px -16px rgba(249,115,22,.4)!important;
+}
+.card-img{
+  background:linear-gradient(160deg,#eef4ff 0%,#fdf1e6 55%,#f6efff 100%)!important;
+  border-bottom:1px solid #f3ecf9!important;
+}
+.card h3{color:#0f1f4b!important}
+.card .desc{color:#5b6472!important}
+
+/* ---------- 3. Цветные плашки категорий ---------- */
+.card-tag{
+  display:inline-flex!important;align-items:center!important;gap:6px!important;
+  align-self:flex-start!important;width:auto!important;
+  padding:5px 11px!important;border-radius:99px!important;
+  font-size:10.5px!important;font-weight:800!important;letter-spacing:.07em!important;
+  background:#eef1f8!important;color:#475569!important;
+}
+.card-tag:before{
+  content:""!important;display:block!important;
+  width:6px!important;height:6px!important;border-radius:50%!important;
+  background:currentColor!important;
+}
+.card-tag[data-cat="Электроника"]{background:#e0edff!important;color:#1d4ed8!important}
+.card-tag[data-cat="Дом"]{background:#dcfce7!important;color:#15803d!important}
+.card-tag[data-cat="Одежда"]{background:#fef0d6!important;color:#b45309!important}
+.card-tag[data-cat="Аксессуары"]{background:#f3e8ff!important;color:#7c3aed!important}
+
+/* ---------- 4. Яркие цены, старая цена и метка скидки ---------- */
+.price-row{
+  display:flex!important;align-items:center!important;gap:9px!important;
+  justify-content:flex-start!important;flex-wrap:wrap!important;
+}
+.price{
+  color:#e11d48!important;
+  font-size:22px!important;font-weight:900!important;letter-spacing:-.02em!important;
+}
+.price .old,.price s,.old{
+  color:#9aa3b2!important;font-size:13px!important;font-weight:600!important;
+  text-decoration:line-through!important;
+}
+.price-row:has(.old):after{
+  content:"СКИДКА"!important;
+  background:linear-gradient(135deg,#16a34a,#22c55e)!important;
+  color:#fff!important;font-size:10px!important;font-weight:800!important;
+  letter-spacing:.08em!important;padding:4px 9px!important;border-radius:99px!important;
+  margin-left:auto!important;box-shadow:0 8px 16px -10px rgba(22,163,74,.9)!important;
+}
+
+/* ---------- 1. Яркая кнопка «В корзину» ---------- */
+.btn-primary{
+  background:linear-gradient(135deg,#f97316 0%,#fb923c 100%)!important;
+  color:#fff!important;border-radius:13px!important;
+  font-weight:800!important;letter-spacing:.01em!important;
+  box-shadow:0 14px 24px -14px rgba(249,115,22,1)!important;
+  width:100%!important;
+}
+.btn-primary:hover{
+  background:linear-gradient(135deg,#ea580c 0%,#f97316 100%)!important;
+  transform:translateY(-2px)!important;
+  box-shadow:0 18px 28px -14px rgba(234,88,12,1)!important;
+}
+.btn-primary:active{transform:translateY(0)!important}
+.btn-ink{background:linear-gradient(135deg,#1d4ed8,#2563eb)!important;box-shadow:0 12px 22px -14px rgba(29,78,216,1)!important}
+.btn-ink:hover{background:linear-gradient(135deg,#1e40af,#1d4ed8)!important}
+.btn-green{background:linear-gradient(135deg,#16a34a,#22c55e)!important;box-shadow:0 12px 22px -14px rgba(22,163,74,.95)!important}
+.btn-green:hover{background:linear-gradient(135deg,#15803d,#16a34a)!important}
+.btn-ghost{background:#fff!important;border:1px solid #dbe4f7!important;color:#1d4ed8!important;font-weight:700!important}
+.btn-ghost:hover{background:#eff5ff!important;border-color:#bfd7ff!important}
+
+/* ---------- корзина и админка ---------- */
+.panel{
+  background:var(--v4-card)!important;border:1px solid #f0eade!important;
+  border-radius:16px!important;box-shadow:0 10px 26px -22px rgba(15,31,75,.5)!important;
+}
+.panel-head{background:#f7f9ff!important;border-bottom:1px solid #eaeefb!important;color:#0f1f4b!important}
+.cart-item{border-bottom:1px solid #f2ece1!important}
+.cart-thumb{background:linear-gradient(150deg,#eef4ff,#fdf1e6)!important;border:1px solid #f0eade!important;border-radius:14px!important}
+.item-sum,.sum-row.total{color:#e11d48!important}
+.sum-row.total{border-top:1px solid #eaeefb!important;font-weight:900!important}
+.sum-title{color:#0f1f4b!important}
+.free,.note.ok{color:#16a34a!important}
+.qty{border:1px solid #dbe4f7!important;border-radius:12px!important}
+.qty button:hover{background:#eff5ff!important;color:#2563eb!important}
+.qty span{color:#0f1f4b!important}
+.link-remove:hover{color:#e11d48!important}
+.promo input{border:1px solid #dbe4f7!important;border-radius:12px!important}
+.promo input:focus{border-color:#2563eb!important;box-shadow:0 0 0 3px rgba(37,99,235,.14)!important}
+.field input,.field textarea,.field select{border:1px solid #dfe6f5!important;border-radius:11px!important;background:#fff!important}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:#2563eb!important;box-shadow:0 0 0 3px rgba(37,99,235,.14)!important}
+.field label{color:#44506b!important}
+.admin-ico{background:linear-gradient(150deg,#eef4ff,#fdf1e6)!important;border:1px solid #f0eade!important}
+.admin-row{border-bottom:1px solid #f2ece1!important}
+.hero-sm{
+  background:radial-gradient(130% 140% at 5% 0%,#3b82f6 0%,#4f46e5 55%,#7c3aed 100%)!important;
+  border:0!important;border-radius:18px!important;color:#fff!important;
+  box-shadow:0 22px 46px -30px rgba(79,70,229,.9)!important;
+}
+.hero-sm h1,.hero-sm h1 *{color:#fff!important}
+.hero-sm p,.hero-sm p *{color:#e6ebff!important}
+.cart-info{color:#e6ebff!important}
+.toast{background:linear-gradient(135deg,#1d4ed8,#2563eb)!important;border-radius:13px!important}
+
+/* ---------- подвал ---------- */
+.foot{
+  background:linear-gradient(100deg,#0d1b40 0%,#1e3a8a 60%,#2563eb 100%)!important;
+  border-top:0!important;
+}
+.foot-in{color:#bfd3ff!important}
+.foot-in strong{color:#ffffff!important}
+
+@media (max-width:560px){
+  .price{font-size:20px!important}
+  .hero .chip{font-size:12px!important;padding:8px 12px!important}
+}

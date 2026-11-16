@@ -6,7 +6,7 @@
 <title>Vovochka.Store — демо интернет-магазин</title>
 <meta name="description" content="Демо интернет-магазин: каталог, корзина, админка.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="style.css?v=8">
+<link rel="stylesheet" href="style.css?v=9">
 </head>
 <body>
 <header class="top">
@@ -17,7 +17,7 @@
     </a>
     <nav class="nav">
       <a href="index.html" data-nav="index">Каталог</a>
-      <a href="cart.html" class="cart-link" data-nav="cart">Корзина <span class="badge" data-cart-badge>0</span></a>
+      <a href="cart.html" class="cart-link" data-nav="cart" title="Перейти в корзину"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h2.2l2.3 10.2h9.6L20 7H6.3"/><circle cx="9.6" cy="18.6" r="1.6"/><circle cx="17.2" cy="18.6" r="1.6"/></svg><span class="cart-t">Корзина</span> <span class="badge" data-cart-badge>0</span></a>
       <a href="admin.html" data-nav="admin">Админка</a>
     </nav>
   </div>
@@ -55,6 +55,44 @@
   </div>
 </footer>
 <div class="toast" id="toast"></div>
+<a class="cart-fab" id="cartFab" href="cart.html" aria-label="Перейти в корзину">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3 4h2.2l2.3 10.2h9.6L20 7H6.3"/><circle cx="9.6" cy="18.6" r="1.6"/><circle cx="17.2" cy="18.6" r="1.6"/>
+  </svg>
+  <span>Корзина</span>
+  <span class="fab-n" data-cart-badge>0</span>
+  <span class="fab-s" id="fabSum"></span>
+</a>
+<script>
+(function(){
+  function fmt(n){ return new Intl.NumberFormat('ru-RU').format(Math.round(n)) + ' ₽'; }
+  function refresh(){
+    var fab = document.getElementById('cartFab');
+    if (!fab) return;
+    var cart = {}, prods = [];
+    try { cart = JSON.parse(localStorage.getItem('shop_cart_v1') || '{}') || {}; } catch (e) { cart = {}; }
+    try { prods = JSON.parse(localStorage.getItem('shop_products_v1') || 'null') || []; } catch (e) { prods = []; }
+    var n = 0, sum = 0, i, k, q;
+    for (k in cart) {
+      q = cart[k] || 0; n += q;
+      for (i = 0; i < prods.length; i++) { if (prods[i] && prods[i].id === k) { sum += (prods[i].price || 0) * q; break; } }
+    }
+    var badge = fab.querySelector('.fab-n');
+    if (badge) badge.textContent = n > 99 ? '99+' : String(n);
+    var s = document.getElementById('fabSum');
+    if (s) s.textContent = n > 0 ? fmt(sum) : '';
+    if (n > 0) { fab.classList.add('on'); } else { fab.classList.remove('on'); }
+  }
+  document.addEventListener('DOMContentLoaded', refresh);
+  window.addEventListener('storage', refresh);
+  document.addEventListener('click', function(e){
+    var t = e.target;
+    if (t && t.closest && t.closest('[data-add]')) setTimeout(refresh, 40);
+  });
+  setTimeout(refresh, 500);
+})();
+</script>
+
 
 <script src="art.js?v=4"></script>
 <script>
@@ -104,10 +142,10 @@ var _tt = null;
 function toast(t){
   var el = document.getElementById('toast');
   if (!el) return;
-  el.textContent = t;
+  el.innerHTML = t;
   el.classList.add('show');
   clearTimeout(_tt);
-  _tt = setTimeout(function(){ el.classList.remove('show'); }, 2100);
+  _tt = setTimeout(function(){ el.classList.remove('show'); }, 3900);
 }
 function paintBadge(){
   var n = cartCount();
@@ -131,7 +169,7 @@ function addToCart(id){
   setCart(c);
   paintBadge();
   var p = byId(id);
-  toast('В корзине: ' + (p ? p.name : 'товар'));
+  toast('<span>В корзине: ' + esc(p ? p.name : 'товар') + '</span><a class="toast-go" href="cart.html">Перейти в корзину →</a>');
 }
 function cardHtml(p){
   var oldPart = (p.old && p.old > p.price) ? '<span class="old">' + money(p.old) + '</span>' : '';

@@ -6,7 +6,7 @@
 <title>Vovochka.Store — демо интернет-магазин</title>
 <meta name="description" content="Демо интернет-магазин: каталог, корзина, админка.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 <header class="top">
@@ -56,7 +56,7 @@
 </footer>
 <div class="toast" id="toast"></div>
 
-<script src="art.js"></script>
+<script src="art.js?v=4"></script>
 <script>
 
 var DB = {
@@ -69,7 +69,9 @@ var DB = {
     {id:'p3',name:'Ноутбук SlimBook 14',desc:'Ryzen 5, 16 ГБ ОЗУ, SSD 512 ГБ, корпус 1.3 кг.',price:58900,old:0,cat:'Электроника',icon:'💻'},
     {id:'p4',name:'Кофеварка Barista Home',desc:'Капучинатор, 15 бар, капучино и латте за две минуты.',price:12990,old:15490,cat:'Дом',icon:'☕'},
     {id:'p5',name:'Кроссовки Urban Run',desc:'Дышащий верх, амортизация, размеры 38-45.',price:5490,old:6990,cat:'Одежда',icon:'👟'},
-    {id:'p6',name:'Рюкзак City 22 литра',desc:'Водоотталкивающая ткань, отсек для ноутбука 15.6.',price:3490,old:0,cat:'Аксессуары',icon:'🎒'}
+    {id:'p6',name:'Рюкзак City 22 литра',desc:'Водоотталкивающая ткань, отсек для ноутбука 15.6.',price:3490,old:0,cat:'Аксессуары',icon:'🎒'},
+    {id:'p7',name:'Умные часы Pulse S2',desc:'AMOLED, пульс и сон, автономность до 10 дней.',price:8990,old:10990,cat:'Электроника',icon:'⌚'},
+    {id:'p8',name:'Клавиатура KeyLite 75',desc:'Механика, горячая замена свитчей, подсветка.',price:6490,old:7990,cat:'Электроника',icon:'⌨'}
   ]
 };
 function lsRead(k, fb){
@@ -83,7 +85,8 @@ function lsRead(k, fb){
 function lsWrite(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 function getProducts(){
   var p = lsRead(DB.KP, null);
-  if (!p || !p.length || typeof p.slice !== 'function') { p = DB.DEFAULT.slice(); lsWrite(DB.KP, p); }
+  var stale = (!p || !p.length || typeof p.slice !== 'function' || p.length !== DB.DEFAULT.length);
+  if (stale) { p = DB.DEFAULT.slice(); lsWrite(DB.KP, p); }
   return p;
 }
 function setProducts(list){ lsWrite(DB.KP, list); }

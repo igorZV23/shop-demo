@@ -30,7 +30,7 @@
   </section>
   <div class="admin-layout">
     <section class="panel">
-      <div class="panel-head">➕ Новый товар</div>
+      <div class="panel-head"><span class="ph-ico"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span>Новый товар</div>
       <form class="form" id="addForm">
         <div class="field">
           <label for="f-name">Название</label>
@@ -53,7 +53,7 @@
             <datalist id="catList"></datalist>
           </div>
           <div class="field">
-            <label for="f-icon">Иконка (эмодзи)</label>
+            <label for="f-icon">Иллюстрация (ключ: 📱 🎧 💻 ☕ 👟 🎒)</label>
             <input id="f-icon" maxlength="4" placeholder="📦">
           </div>
         </div>
@@ -67,7 +67,7 @@
     </section>
     <section class="panel">
       <div class="panel-head">
-        📋 Товары <span id="admCnt" class="cnt"></span>
+        <span class="ph-ico"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg></span>Товары <span id="admCnt" class="cnt"></span>
         <button class="btn btn-ghost btn-sm" id="resetAll" style="margin-left:auto">Сбросить к демо</button>
       </div>
       <div id="adminList"></div>
@@ -84,6 +84,7 @@
 </footer>
 <div class="toast" id="toast"></div>
 
+<script src="art.js"></script>
 <script>
 
 var DB = {
@@ -155,7 +156,7 @@ function renderAdmin(){
     var p = list[i];
     if (p.cat && cats.indexOf(p.cat) < 0) cats.push(p.cat);
     html += '<div class="admin-row">' +
-      '<div class="admin-ico">' + esc(p.icon || '📦') + '</div>' +
+      '<div class="admin-ico">' + artSvg(p) + '</div>' +
       '<div>' +
         '<p class="admin-name">' + esc(p.name) + '</p>' +
         '<p class="admin-sub">' + esc(p.cat || 'без категории') + ' · ' + money(p.price) + (p.old ? ' · было ' + money(p.old) : '') + '</p>' +

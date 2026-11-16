@@ -30,7 +30,7 @@
   </div>
   <div id="filled" class="cart-layout" hidden>
     <section class="panel">
-      <div class="panel-head">🛒 Товары в заказе</div>
+      <div class="panel-head"><span class="ph-ico"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h2l2.2 9.5h9.3L20 8H7"/><circle cx="9.5" cy="18.5" r="1.5"/><circle cx="17" cy="18.5" r="1.5"/></svg></span>Товары в заказе</div>
       <div id="items"></div>
     </section>
     <aside class="panel summary">
@@ -50,7 +50,7 @@
     </aside>
   </div>
   <div id="empty" class="panel empty" hidden>
-    <div class="big">🧺</div>
+    <div class="big"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11H6.2z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg></div>
     <h3>Корзина пуста</h3>
     <p>Добавьте товары из каталога, они появятся здесь.</p>
     <a href="index.html" class="btn btn-primary">Перейти в каталог</a>
@@ -66,6 +66,7 @@
 </footer>
 <div class="toast" id="toast"></div>
 
+<script src="art.js"></script>
 <script>
 
 var DB = {
@@ -155,7 +156,7 @@ function renderCart(){
     var sum = p.price * qty;
     goods += sum;
     html += '<div class="cart-item">' +
-      '<div class="cart-thumb">' + esc(p.icon || '📦') + '</div>' +
+      '<div class="cart-thumb">' + artSvg(p) + '</div>' +
       '<div class="cart-info">' +
         '<p class="cart-name">' + esc(p.name) + '</p>' +
         '<p class="cart-meta">' + esc(p.cat || '') + ' · ' + money(p.price) + ' за шт.</p>' +

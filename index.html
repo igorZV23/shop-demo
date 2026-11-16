@@ -12,7 +12,7 @@
 <header class="top">
   <div class="top-in">
     <a class="logo" href="index.html">
-      <span class="logo-mark">&#128717;</span>
+      <span class="logo-mark"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5l8 14 8-14"/></svg></span>
       <span>Vovochka.Store<small>demo shop</small></span>
     </a>
     <nav class="nav">
@@ -28,19 +28,19 @@
     <h1>Техника и вещи<br>с быстрой доставкой</h1>
     <p>Демонстрационный интернет-магазин: каталог с поиском и фильтром, корзина с подсчётом суммы и промокодом, простая админка для добавления товаров.</p>
     <div class="chips">
-      <span class="chip">🚚 Доставка 1-2 дня</span>
-      <span class="chip">↩️ Возврат 14 дней</span>
-      <span class="chip">🔒 Оплата при получении</span>
+      <span class="chip"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v8H3z"/><path d="M14 10h4l3 3v2h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg>Доставка 1–2 дня</span>
+      <span class="chip"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h9a4 4 0 0 1 0 8H9"/><path d="M7 6L4 9l3 3"/></svg>Возврат 14 дней</span>
+      <span class="chip"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Оплата при получении</span>
     </div>
   </section>
   <div class="toolbar">
     <h2>Каталог <span id="cnt" class="cnt"></span></h2>
     <select id="cat" class="sel"></select>
-    <label class="search"><span>🔍</span><input id="q" type="search" placeholder="Поиск по названию..."></label>
+    <label class="search"><span class="search-ico"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg></span><input id="q" type="search" placeholder="Поиск по названию..."></label>
   </div>
   <div id="grid" class="grid"></div>
   <div id="empty" class="panel empty" hidden>
-    <div class="big">🔍</div>
+    <div class="big"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg></div>
     <h3>Ничего не нашлось</h3>
     <p>Попробуйте другой запрос или сбросьте фильтр.</p>
     <button class="btn btn-ghost" id="reset">Сбросить фильтр</button>
@@ -56,6 +56,7 @@
 </footer>
 <div class="toast" id="toast"></div>
 
+<script src="art.js"></script>
 <script>
 
 var DB = {
@@ -132,7 +133,7 @@ function addToCart(id){
 function cardHtml(p){
   var oldPart = (p.old && p.old > p.price) ? '<span class="old">' + money(p.old) + '</span>' : '';
   return '<article class="card">' +
-    '<div class="card-img">' + esc(p.icon || '📦') + '</div>' +
+    '<div class="card-img">' + artSvg(p) + '</div>' +
     '<div class="card-body">' +
       '<div class="card-tag">' + esc(p.cat || 'Товар') + '</div>' +
       '<h3>' + esc(p.name) + '</h3>' +

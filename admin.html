@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Админка — Vovochka.Store</title>
+<meta name="description" content="Админка демо-магазина: добавление и удаление товаров.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <a class="logo" href="index.html">
+      <span class="logo-mark">&#128717;</span>
+      <span>Vovochka.Store<small>demo shop</small></span>
+    </a>
+    <nav class="nav">
+      <a href="index.html" data-nav="index">Каталог</a>
+      <a href="cart.html" class="cart-link" data-nav="cart">Корзина <span class="badge" data-cart-badge>0</span></a>
+      <a href="admin.html" data-nav="admin">Админка</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero hero-sm">
+    <h1>Админка магазина</h1>
+    <p>Добавляйте и удаляйте товары, меняйте цены. Всё сохраняется в браузере и сразу видно в каталоге.</p>
+  </section>
+  <div class="admin-layout">
+    <section class="panel">
+      <div class="panel-head">➕ Новый товар</div>
+      <form class="form" id="addForm">
+        <div class="field">
+          <label for="f-name">Название</label>
+          <input id="f-name" required maxlength="80" placeholder="Например, Смартфон Neo X6">
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label for="f-price">Цена, ₽</label>
+            <input id="f-price" type="number" min="1" step="1" required placeholder="19990">
+          </div>
+          <div class="field">
+            <label for="f-old">Старая цена, ₽</label>
+            <input id="f-old" type="number" min="0" step="1" placeholder="не обязательно">
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label for="f-cat">Категория</label>
+            <input id="f-cat" maxlength="30" list="catList" placeholder="Электроника">
+            <datalist id="catList"></datalist>
+          </div>
+          <div class="field">
+            <label for="f-icon">Иконка (эмодзи)</label>
+            <input id="f-icon" maxlength="4" placeholder="📦">
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-desc">Описание</label>
+          <textarea id="f-desc" maxlength="200" placeholder="Коротко о товаре"></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit">Добавить в каталог</button>
+        <div class="hint">Товар появится в каталоге сразу. Демо-данные можно вернуть кнопкой справа.</div>
+      </form>
+    </section>
+    <section class="panel">
+      <div class="panel-head">
+        📋 Товары <span id="admCnt" class="cnt"></span>
+        <button class="btn btn-ghost btn-sm" id="resetAll" style="margin-left:auto">Сбросить к демо</button>
+      </div>
+      <div id="adminList"></div>
+    </section>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="foot-in">
+    <strong>Vovochka.Store</strong>
+    <span>учебный демо-магазин &middot; данные хранятся в браузере</span>
+    <span style="margin-left:auto">&copy; <span id="year"></span></span>
+  </div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+
+var DB = {
+  KP: 'shop_products_v1',
+  KC: 'shop_cart_v1',
+  KD: 'shop_promo_v1',
+  DEFAULT: [
+    {id:'p1',name:'Смартфон Neo X6 128 ГБ',desc:'Экран 6.5 дюйма, камера 50 Мп, батарея 5000 мАч, тёмно-синий.',price:24990,old:29990,cat:'Электроника',icon:'📱'},
+    {id:'p2',name:'Наушники AirBeat Pro',desc:'Беспроводные, активное шумоподавление, до 30 часов работы.',price:7490,old:9490,cat:'Электроника',icon:'🎧'},
+    {id:'p3',name:'Ноутбук SlimBook 14',desc:'Ryzen 5, 16 ГБ ОЗУ, SSD 512 ГБ, корпус 1.3 кг.',price:58900,old:0,cat:'Электроника',icon:'💻'},
+    {id:'p4',name:'Кофеварка Barista Home',desc:'Капучинатор, 15 бар, капучино и латте за две минуты.',price:12990,old:15490,cat:'Дом',icon:'☕'},
+    {id:'p5',name:'Кроссовки Urban Run',desc:'Дышащий верх, амортизация, размеры 38-45.',price:5490,old:6990,cat:'Одежда',icon:'👟'},
+    {id:'p6',name:'Рюкзак City 22 литра',desc:'Водоотталкивающая ткань, отсек для ноутбука 15.6.',price:3490,old:0,cat:'Аксессуары',icon:'🎒'}
+  ]
+};
+function lsRead(k, fb){
+  try {
+    var raw = localStorage.getItem(k);
+    if (!raw) return fb;
+    var v = JSON.parse(raw);
+    return (v === null || v === undefined) ? fb : v;
+  } catch (e) { return fb; }
+}
+function lsWrite(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+function getProducts(){
+  var p = lsRead(DB.KP, null);
+  if (!p || !p.length || typeof p.slice !== 'function') { p = DB.DEFAULT.slice(); lsWrite(DB.KP, p); }
+  return p;
+}
+function setProducts(list){ lsWrite(DB.KP, list); }
+function getCart(){ var c = lsRead(DB.KC, {}); return (c && typeof c === 'object') ? c : {}; }
+function setCart(c){ lsWrite(DB.KC, c); }
+function cartCount(){ var c = getCart(), n = 0; for (var k in c) { n += (c[k] || 0); } return n; }
+function money(n){ return new Intl.NumberFormat('ru-RU').format(Math.round(n)) + ' ₽'; }
+function esc(s){
+  return String(s === null || s === undefined ? '' : s).replace(/[&<>"']/g, function(m){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m];
+  });
+}
+function byId(id){ var list = getProducts(); for (var i = 0; i < list.length; i++) { if (list[i].id === id) return list[i]; } return null; }
+var _tt = null;
+function toast(t){
+  var el = document.getElementById('toast');
+  if (!el) return;
+  el.textContent = t;
+  el.classList.add('show');
+  clearTimeout(_tt);
+  _tt = setTimeout(function(){ el.classList.remove('show'); }, 2100);
+}
+function paintBadge(){
+  var n = cartCount();
+  var els = document.querySelectorAll('[data-cart-badge]');
+  for (var i = 0; i < els.length; i++) {
+    els[i].textContent = n > 99 ? '99+' : String(n);
+    els[i].style.display = n > 0 ? 'grid' : 'none';
+  }
+}
+function footerYear(){ var y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear(); }
+function markNav(page){
+  var links = document.querySelectorAll('[data-nav]');
+  for (var i = 0; i < links.length; i++) {
+    if (links[i].getAttribute('data-nav') === page) links[i].className += ' active';
+  }
+}
+
+function renderAdmin(){
+  var list = getProducts(), cats = [], html = '';
+  for (var i = 0; i < list.length; i++) {
+    var p = list[i];
+    if (p.cat && cats.indexOf(p.cat) < 0) cats.push(p.cat);
+    html += '<div class="admin-row">' +
+      '<div class="admin-ico">' + esc(p.icon || '📦') + '</div>' +
+      '<div>' +
+        '<p class="admin-name">' + esc(p.name) + '</p>' +
+        '<p class="admin-sub">' + esc(p.cat || 'без категории') + ' · ' + money(p.price) + (p.old ? ' · было ' + money(p.old) : '') + '</p>' +
+      '</div>' +
+      '<button class="btn btn-red btn-sm" data-del="' + esc(p.id) + '">Удалить</button>' +
+    '</div>';
+  }
+  document.getElementById('adminList').innerHTML = html || '<div class="empty"><p>Товаров нет, добавьте первый.</p></div>';
+  document.getElementById('admCnt').textContent = '· ' + list.length + ' шт.';
+  document.getElementById('catList').innerHTML = cats.map(function(c){ return '<option value="' + esc(c) + '">'; }).join('');
+  var dels = document.querySelectorAll('[data-del]');
+  for (var d = 0; d < dels.length; d++) {
+    dels[d].addEventListener('click', function(){
+      var id = this.getAttribute('data-del');
+      var arr = getProducts().filter(function(x){ return x.id !== id; });
+      setProducts(arr);
+      renderAdmin();
+      toast('Товар удалён');
+    });
+  }
+}
+document.addEventListener('DOMContentLoaded', function(){
+  markNav('admin');
+  footerYear();
+  renderAdmin();
+  paintBadge();
+  document.getElementById('addForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var name = document.getElementById('f-name').value.trim();
+    var price = parseInt(document.getElementById('f-price').value, 10);
+    var oldp = parseInt(document.getElementById('f-old').value || '0', 10) || 0;
+    var cat = document.getElementById('f-cat').value.trim() || 'Разное';
+    var icon = document.getElementById('f-icon').value.trim() || '📦';
+    var desc = document.getElementById('f-desc').value.trim();
+    if (!name || !price || price <= 0) { toast('Заполните название и цену'); return; }
+    var arr = getProducts();
+    arr.unshift({
+      id: 'p' + Date.now(),
+      name: name,
+      desc: desc,
+      price: price,
+      old: oldp,
+      cat: cat,
+      icon: icon
+    });
+    setProducts(arr);
+    this.reset();
+    renderAdmin();
+    toast('Товар добавлен в каталог');
+  });
+  document.getElementById('resetAll').addEventListener('click', function(){
+    setProducts(DB.DEFAULT.slice());
+    renderAdmin();
+    toast('Демо-товары восстановлены');
+  });
+});
+
+</script>
+</body>
+</html>

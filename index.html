@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vovochka.Store — демо интернет-магазин</title>
+<meta name="description" content="Демо интернет-магазин: каталог, корзина, админка.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <a class="logo" href="index.html">
+      <span class="logo-mark">&#128717;</span>
+      <span>Vovochka.Store<small>demo shop</small></span>
+    </a>
+    <nav class="nav">
+      <a href="index.html" data-nav="index">Каталог</a>
+      <a href="cart.html" class="cart-link" data-nav="cart">Корзина <span class="badge" data-cart-badge>0</span></a>
+      <a href="admin.html" data-nav="admin">Админка</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>Техника и вещи<br>с быстрой доставкой</h1>
+    <p>Демонстрационный интернет-магазин: каталог с поиском и фильтром, корзина с подсчётом суммы и промокодом, простая админка для добавления товаров.</p>
+    <div class="chips">
+      <span class="chip">🚚 Доставка 1-2 дня</span>
+      <span class="chip">↩️ Возврат 14 дней</span>
+      <span class="chip">🔒 Оплата при получении</span>
+    </div>
+  </section>
+  <div class="toolbar">
+    <h2>Каталог <span id="cnt" class="cnt"></span></h2>
+    <select id="cat" class="sel"></select>
+    <label class="search"><span>🔍</span><input id="q" type="search" placeholder="Поиск по названию..."></label>
+  </div>
+  <div id="grid" class="grid"></div>
+  <div id="empty" class="panel empty" hidden>
+    <div class="big">🔍</div>
+    <h3>Ничего не нашлось</h3>
+    <p>Попробуйте другой запрос или сбросьте фильтр.</p>
+    <button class="btn btn-ghost" id="reset">Сбросить фильтр</button>
+  </div>
+</main>
+
+<footer class="foot">
+  <div class="foot-in">
+    <strong>Vovochka.Store</strong>
+    <span>учебный демо-магазин &middot; данные хранятся в браузере</span>
+    <span style="margin-left:auto">&copy; <span id="year"></span></span>
+  </div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+
+var DB = {
+  KP: 'shop_products_v1',
+  KC: 'shop_cart_v1',
+  KD: 'shop_promo_v1',
+  DEFAULT: [
+    {id:'p1',name:'Смартфон Neo X6 128 ГБ',desc:'Экран 6.5 дюйма, камера 50 Мп, батарея 5000 мАч, тёмно-синий.',price:24990,old:29990,cat:'Электроника',icon:'📱'},
+    {id:'p2',name:'Наушники AirBeat Pro',desc:'Беспроводные, активное шумоподавление, до 30 часов работы.',price:7490,old:9490,cat:'Электроника',icon:'🎧'},
+    {id:'p3',name:'Ноутбук SlimBook 14',desc:'Ryzen 5, 16 ГБ ОЗУ, SSD 512 ГБ, корпус 1.3 кг.',price:58900,old:0,cat:'Электроника',icon:'💻'},
+    {id:'p4',name:'Кофеварка Barista Home',desc:'Капучинатор, 15 бар, капучино и латте за две минуты.',price:12990,old:15490,cat:'Дом',icon:'☕'},
+    {id:'p5',name:'Кроссовки Urban Run',desc:'Дышащий верх, амортизация, размеры 38-45.',price:5490,old:6990,cat:'Одежда',icon:'👟'},
+    {id:'p6',name:'Рюкзак City 22 литра',desc:'Водоотталкивающая ткань, отсек для ноутбука 15.6.',price:3490,old:0,cat:'Аксессуары',icon:'🎒'}
+  ]
+};
+function lsRead(k, fb){
+  try {
+    var raw = localStorage.getItem(k);
+    if (!raw) return fb;
+    var v = JSON.parse(raw);
+    return (v === null || v === undefined) ? fb : v;
+  } catch (e) { return fb; }
+}
+function lsWrite(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+function getProducts(){
+  var p = lsRead(DB.KP, null);
+  if (!p || !p.length || typeof p.slice !== 'function') { p = DB.DEFAULT.slice(); lsWrite(DB.KP, p); }
+  return p;
+}
+function setProducts(list){ lsWrite(DB.KP, list); }
+function getCart(){ var c = lsRead(DB.KC, {}); return (c && typeof c === 'object') ? c : {}; }
+function setCart(c){ lsWrite(DB.KC, c); }
+function cartCount(){ var c = getCart(), n = 0; for (var k in c) { n += (c[k] || 0); } return n; }
+function money(n){ return new Intl.NumberFormat('ru-RU').format(Math.round(n)) + ' ₽'; }
+function esc(s){
+  return String(s === null || s === undefined ? '' : s).replace(/[&<>"']/g, function(m){
+    return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m];
+  });
+}
+function byId(id){ var list = getProducts(); for (var i = 0; i < list.length; i++) { if (list[i].id === id) return list[i]; } return null; }
+var _tt = null;
+function toast(t){
+  var el = document.getElementById('toast');
+  if (!el) return;
+  el.textContent = t;
+  el.classList.add('show');
+  clearTimeout(_tt);
+  _tt = setTimeout(function(){ el.classList.remove('show'); }, 2100);
+}
+function paintBadge(){
+  var n = cartCount();
+  var els = document.querySelectorAll('[data-cart-badge]');
+  for (var i = 0; i < els.length; i++) {
+    els[i].textContent = n > 99 ? '99+' : String(n);
+    els[i].style.display = n > 0 ? 'grid' : 'none';
+  }
+}
+function footerYear(){ var y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear(); }
+function markNav(page){
+  var links = document.querySelectorAll('[data-nav]');
+  for (var i = 0; i < links.length; i++) {
+    if (links[i].getAttribute('data-nav') === page) links[i].className += ' active';
+  }
+}
+
+function addToCart(id){
+  var c = getCart();
+  c[id] = (c[id] || 0) + 1;
+  setCart(c);
+  paintBadge();
+  var p = byId(id);
+  toast('В корзине: ' + (p ? p.name : 'товар'));
+}
+function cardHtml(p){
+  var oldPart = (p.old && p.old > p.price) ? '<span class="old">' + money(p.old) + '</span>' : '';
+  return '<article class="card">' +
+    '<div class="card-img">' + esc(p.icon || '📦') + '</div>' +
+    '<div class="card-body">' +
+      '<div class="card-tag">' + esc(p.cat || 'Товар') + '</div>' +
+      '<h3>' + esc(p.name) + '</h3>' +
+      '<p class="desc">' + esc(p.desc || '') + '</p>' +
+      '<div class="price-row"><div class="price">' + oldPart + money(p.price) + '</div></div>' +
+      '<button class="btn btn-primary" data-add="' + esc(p.id) + '">В корзину</button>' +
+    '</div>' +
+  '</article>';
+}
+function render(){
+  var all = getProducts();
+  var q = (document.getElementById('q').value || '').trim().toLowerCase();
+  var cat = document.getElementById('cat').value;
+  var list = [];
+  for (var i = 0; i < all.length; i++) {
+    var p = all[i];
+    var hay = (p.name + ' ' + (p.desc || '') + ' ' + (p.cat || '')).toLowerCase();
+    if (q && hay.indexOf(q) < 0) continue;
+    if (cat && p.cat !== cat) continue;
+    list.push(p);
+  }
+  document.getElementById('grid').innerHTML = list.map(cardHtml).join('');
+  document.getElementById('empty').hidden = list.length > 0;
+  document.getElementById('cnt').textContent = '· ' + list.length + ' из ' + all.length;
+  var btns = document.querySelectorAll('[data-add]');
+  for (var j = 0; j < btns.length; j++) {
+    btns[j].addEventListener('click', function(){ addToCart(this.getAttribute('data-add')); });
+  }
+}
+function initCats(){
+  var all = getProducts(), cats = [];
+  for (var i = 0; i < all.length; i++) {
+    if (all[i].cat && cats.indexOf(all[i].cat) < 0) cats.push(all[i].cat);
+  }
+  document.getElementById('cat').innerHTML = '<option value="">Все категории</option>' +
+    cats.map(function(c){ return '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }).join('');
+}
+document.addEventListener('DOMContentLoaded', function(){
+  markNav('index'); footerYear(); initCats(); render(); paintBadge();
+  document.getElementById('q').addEventListener('input', render);
+  document.getElementById('cat').addEventListener('change', render);
+  document.getElementById('reset').addEventListener('click', function(){
+    document.getElementById('q').value = '';
+    document.getElementById('cat').value = '';
+    render();
+  });
+});
+
+</script>
+</body>
+</html>
